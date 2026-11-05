@@ -21,3 +21,10 @@ management:
     health:
       probes:
         enabled: true   # adds /actuator/health/liveness and /actuator/health/readiness
+      group:
+        readiness:
+          include: readinessState,demoFailure
+
+deadlinedash:
+  demo:
+    fail-readiness: true   # ROLLBACK DEMO: deliberately breaks readiness. Reverted right after.
