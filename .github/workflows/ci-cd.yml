@@ -23,10 +23,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Scan for leaked secrets (gitleaks)
-        uses: gitleaks/gitleaks-action@v3.0.0
+      - name: Scan full history for leaked secrets (gitleaks)
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # no GITLEAKS_LICENSE needed on a personal account
+          GITLEAKS_VERSION: "8.24.3"
+        run: |
+          # Run the binary directly: the packaged action builds a commit range that breaks on a first push.
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" | tar xz gitleaks
+          ./gitleaks detect --source . --redact -v --exit-code 1
 
   build-test:            # stages 1-3: runs on pushes and pull requests
     runs-on: ubuntu-latest
