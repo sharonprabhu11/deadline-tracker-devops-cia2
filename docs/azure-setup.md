@@ -18,7 +18,7 @@ az account show --query "{sub:id, tenant:tenantId}" -o table
 
 export SUB=$(az account show --query id -o tsv)
 export TENANT=$(az account show --query tenantId -o tsv)
-export LOCATION=centralindia            # pick a region close to you that your subscription allows
+export LOCATION=indiasouthcentral      # allowed by the student policy; Standard_B2s is unrestricted here
 export RG=deadlinedash-rg
 export ACR=deadlinedash$RANDOM          # must be globally unique, lowercase letters/digits only
 export AKS=deadlinedash-aks
@@ -27,9 +27,13 @@ echo $ACR   # note this name down
 ```
 
 ## 3. Resource group, ACR and AKS
-Pick the VM size: run `az vm list-skus --location $LOCATION --size Standard_B2 --query "[].name" -o tsv`
-and use the cheapest 2 vCPU / 4 GiB size listed (normally `Standard_B2s`). 4 GiB is the practical
-minimum for 2 app pods + Postgres + system pods.
+VM size: `Standard_B2s` (2 vCPU, 4 GiB) was checked with `az vm list-skus` and has no restrictions in
+`indiasouthcentral`. 4 GiB is the practical minimum for 2 app pods + Postgres + system pods.
+Check quota first (needs at least 2 free vCPUs):
+```bash
+az vm list-usage --location $LOCATION -o table | grep -iE "Total Regional|Standard BS"
+az provider show -n Microsoft.ContainerService --query registrationState -o tsv   # must say Registered
+```
 ```bash
 az group create --name $RG --location $LOCATION
 

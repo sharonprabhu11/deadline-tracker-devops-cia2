@@ -15,3 +15,4 @@ Why each non-obvious choice was made (useful in the viva).
 | 9 | `docker-compose.yml` host port is `${APP_PORT:-8080}` | Port 8080 may already be used on a developer machine. |
 
 | 10 | No k3s Ansible role | AKS is managed; Ansible only applies manifests and creates the Secret from a Vault file. |
+| 11 | Region `indiasouthcentral`, node `Standard_B2s` | The Azure for Students policy allows only 5 regions. `Standard_B2s` showed no restrictions in `indiasouthcentral` (checked with `az vm list-skus`). |
