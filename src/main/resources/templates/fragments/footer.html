@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<footer th:fragment="footer" class="footer">
+  DeadlineDash v<span th:text="${info.version}">0</span>
+  &middot; commit <code id="sha" th:text="${info.commitSha}">dev</code>
+  &middot; pod <code id="pod" th:text="${info.podName}">local</code>
+</footer>
+</body>
+</html>

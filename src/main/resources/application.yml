@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: deadlinedash
+  datasource:
+    # Host and name come from the ConfigMap, user and password from the Secret (see k8s/).
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:deadlinedash}
+    username: ${DB_USER:deadlinedash}
+    password: ${DB_PASSWORD:deadlinedash}
+  jpa:
+    open-in-view: false
+    hibernate:
+      # Flyway owns the schema; Hibernate only checks that entities match it.
+      ddl-auto: validate
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true   # adds /actuator/health/liveness and /actuator/health/readiness
