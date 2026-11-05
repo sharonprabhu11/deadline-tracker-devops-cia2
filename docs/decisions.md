@@ -16,3 +16,4 @@ Why each non-obvious choice was made (useful in the viva).
 
 | 10 | No k3s Ansible role | AKS is managed; Ansible only applies manifests and creates the Secret from a Vault file. |
 | 11 | Region `indiasouthcentral`, node `Standard_B2s` | The Azure for Students policy allows only 5 regions. `Standard_B2s` showed no restrictions in `indiasouthcentral` (checked with `az vm list-skus`). |
+| 12 | gitleaks job in the pipeline | Fails the run if a secret is committed. Uses gitleaks-action v3.0.0 with the built-in GITHUB_TOKEN (no licence needed for a personal account). The deploy job waits for it. |

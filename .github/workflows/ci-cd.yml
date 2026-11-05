@@ -15,6 +15,19 @@ env:
   NAMESPACE: deadlinedash
 
 jobs:
+  secret-scan:           # fails the run if a password, key or token is found in the repo history
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Scan for leaked secrets (gitleaks)
+        uses: gitleaks/gitleaks-action@v3.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # no GITLEAKS_LICENSE needed on a personal account
+
   build-test:            # stages 1-3: runs on pushes and pull requests
     runs-on: ubuntu-latest
     steps:
@@ -35,7 +48,7 @@ jobs:
         run: ./mvnw -B verify
 
   deploy:                # stages 4-8: only on pushes to main
-    needs: build-test
+    needs: [secret-scan, build-test]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     env:
