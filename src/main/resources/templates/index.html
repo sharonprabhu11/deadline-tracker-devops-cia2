@@ -2,10 +2,75 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>DeadlineDash</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 860px; margin: 2rem auto; padding: 0 1rem; color: #222; }
+    h1 { margin-bottom: 0; } .sub { color: #666; margin-top: .2rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    th, td { text-align: left; padding: .45rem .5rem; border-bottom: 1px solid #ddd; }
+    .band { padding: .1rem .5rem; border-radius: 4px; font-size: .8rem; font-weight: 600; color: #fff; }
+    .OVERDUE { background: #7b1fa2; } .URGENT { background: #c62828; } .SOON { background: #ef6c00; }
+    .LATER { background: #2e7d32; } .DONE { background: #888; }
+    tr.finished td { color: #888; text-decoration: line-through; }
+    form.inline { display: inline; } form.add { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .5rem; }
+    .error { color: #c62828; font-size: .85rem; width: 100%; }
+    .footer { margin-top: 2.5rem; padding-top: .6rem; border-top: 1px solid #ddd; color: #666; font-size: .85rem; }
+  </style>
 </head>
 <body>
 <h1>DeadlineDash</h1>
+<p class="sub">Most urgent first. Score = weight &times; 100 / (days left + 1).</p>
+
+<table>
+  <thead><tr><th>Course</th><th>Task</th><th>Due</th><th>Weight</th><th>Score</th><th>Band</th><th></th></tr></thead>
+  <tbody>
+  <tr th:each="v : ${views}" th:classappend="${v.task.done} ? 'finished'">
+    <td th:text="${v.task.course.code}">CS101</td>
+    <td th:text="${v.task.title}">Lab record</td>
+    <td th:text="${v.task.dueDate}">2026-01-01</td>
+    <td th:text="${v.task.weight}">20</td>
+    <td th:text="${v.urgency.score}">0</td>
+    <td><span class="band" th:classappend="${v.urgency.band}" th:text="${v.urgency.band}">LATER</span></td>
+    <td>
+      <form class="inline" th:if="${!v.task.done}" th:action="@{/tasks/{id}/done(id=${v.task.id})}" method="post">
+        <button type="submit">Done</button>
+      </form>
+      <form class="inline" th:action="@{/tasks/{id}/delete(id=${v.task.id})}" method="post">
+        <button type="submit">Delete</button>
+      </form>
+    </td>
+  </tr>
+  <tr th:if="${#lists.isEmpty(views)}"><td colspan="7">No tasks yet. Add a course, then a task.</td></tr>
+  </tbody>
+</table>
+
+<h2>Add task</h2>
+<p th:if="${#lists.isEmpty(courses)}">Add a course first (form below), then pick it here.</p>
+<form class="add" th:action="@{/tasks}" th:object="${taskForm}" method="post">
+  <select th:field="*{courseId}">
+    <option value="">Course...</option>
+    <option th:each="c : ${courses}" th:value="${c.id}" th:text="${c.code} + ' ' + ${c.name}"></option>
+  </select>
+  <input type="text" th:field="*{title}" placeholder="Title">
+  <input type="date" th:field="*{dueDate}">
+  <input type="number" th:field="*{weight}" placeholder="Weight 1-100" min="1" max="100">
+  <button type="submit">Add task</button>
+  <div class="error" th:if="${#fields.hasErrors('*')}">
+    <div th:each="e : ${#fields.errors('*')}" th:text="${e}"></div>
+  </div>
+</form>
+
+<h2>Add course</h2>
+<form class="add" th:action="@{/courses}" th:object="${courseForm}" method="post">
+  <input type="text" th:field="*{code}" placeholder="Code, e.g. CS301">
+  <input type="text" th:field="*{name}" placeholder="Name">
+  <button type="submit">Add course</button>
+  <div class="error" th:if="${#fields.hasErrors('*')}">
+    <div th:each="e : ${#fields.errors('*')}" th:text="${e}"></div>
+  </div>
+</form>
+
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>

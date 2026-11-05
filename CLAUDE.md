@@ -2,6 +2,21 @@
 
 Project guide for Claude Code. Read this fully before making changes.
 
+## Cloud provider: Azure (overrides every AWS reference in this file)
+
+Use Azure instead of AWS:
+- Registry: Azure Container Registry (Basic tier). Image: <ACR_LOGIN_SERVER>/deadlinedash:<commit-sha>.
+- Cluster: AKS with the Free tier control plane and one small node pool (smallest sensible
+  VM size; check current pricing). Attach ACR to the cluster so pods pull images without a pull secret.
+- Pipeline auth: GitHub OIDC to Azure (Entra app registration with a federated credential for this repo,
+  azure/login action). No client secrets stored.
+- Pipeline commands: push to ACR after login; use `az aks get-credentials` for kubectl access.
+- Service type: LoadBalancer.
+- Ansible: no k3s role. roles/deploy applies manifests and creates the Secret from an Ansible Vault vars file.
+- Write docs/azure-setup.md instead of docs/aws-setup.md. First item: a Cost Management budget alert.
+  Last item: delete the resource group after the demo.
+- Never run az commands that create, scale or delete billable resources yourself; give me the commands.
+
 ## What this project is
 
 DeadlineDash is a small Spring Boot web app for students. You add courses and tasks (assignments, CIAs, lab records) with a due date and a weightage, and the page lists them sorted by an **urgency score**, so the top of the list always answers "what should I do first?".

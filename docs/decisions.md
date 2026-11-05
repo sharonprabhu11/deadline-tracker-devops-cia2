@@ -5,11 +5,13 @@ Why each non-obvious choice was made (useful in the viva).
 | # | Decision | Why |
 | --- | --- | --- |
 | 1 | Spring Boot 4.1.2, Java 21 | Versions come from start.spring.io (looked up on 2026-11-05: 4.1.2 is the default stable release). Java 21 is an LTS release that Boot 4.1 supports and the local JDK matches. |
-| 2 | k3s on one EC2 instance | A full EKS cluster costs money per hour for the control plane. k3s is a real, certified Kubernetes in one small binary and runs on a single cheap instance. The manifests are plain Kubernetes, so they also work on EKS. |
-| 3 | Amazon ECR | Image registry inside AWS, visible in the console for the evidence screenshot, and GitHub Actions can push to it with OIDC. |
+| 2 | AKS, Free-tier control plane, one small node pool | CLAUDE.md now says Azure overrides AWS (supersedes the earlier default of k3s on EC2). The Free tier has no control-plane charge; only the node VM is billed. Manifests are plain Kubernetes. |
+| 3 | Azure Container Registry (Basic), attached to AKS | Attaching ACR gives the cluster pull rights through its managed identity, so no image pull secret is needed or expires. |
 | 4 | Postgres as a StatefulSet in the cluster | Avoids RDS cost. A StatefulSet gives the database a stable name and its own volume claim. Limitation: one replica, no backups. |
-| 5 | NodePort Service (30080) | k3s has no cloud load balancer by default. NodePort exposes the app on the EC2 public IP, port 30080, with no extra component. |
-| 6 | GitHub Actions with OIDC to AWS | The workflow gets short-lived credentials by assuming an IAM role, so no AWS keys are stored in GitHub. |
+| 5 | LoadBalancer Service | AKS provisions an Azure public IP for it, so the app is reachable on port 80 with no extra component. |
+| 6 | GitHub Actions with OIDC to Azure | An Entra app registration with a federated credential for this repo lets the workflow log in with `azure/login` without storing any client secret. |
 | 7 | H2 for tests, same Flyway migration | Tests run without Postgres. `V1__init.sql` uses only SQL that both H2 (PostgreSQL mode) and Postgres accept, so the real migration is also tested. |
 | 8 | `spring.jpa.hibernate.ddl-auto=validate` | Flyway owns the schema; Hibernate only checks that entities match it. |
 | 9 | `docker-compose.yml` host port is `${APP_PORT:-8080}` | Port 8080 may already be used on a developer machine. |
+
+| 10 | No k3s Ansible role | AKS is managed; Ansible only applies manifests and creates the Secret from a Vault file. |
