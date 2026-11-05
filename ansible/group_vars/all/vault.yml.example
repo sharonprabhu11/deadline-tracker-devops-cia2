@@ -1,0 +1,4 @@
+# Copy to vault.yml, put real values in, then encrypt:  ansible-vault encrypt group_vars/all/vault.yml
+# vault.yml is git-ignored; this example holds placeholders only.
+vault_db_user: CHANGE_ME
+vault_db_password: CHANGE_ME

@@ -1,0 +1,4 @@
+# Copy to inventory.ini (git-ignored). kubectl runs on your own machine, which must already be
+# logged in to the cluster:  az aks get-credentials --resource-group <rg> --name <aks> --admin
+[local]
+localhost ansible_connection=local

@@ -1,0 +1,47 @@
+- name: Create namespace
+  ansible.builtin.command: kubectl apply -f {{ k8s_dir }}/namespace.yaml
+  changed_when: "'created' in apply_ns.stdout"
+  register: apply_ns
+
+- name: Create the database Secret from the Vault file
+  ansible.builtin.command: kubectl apply -f -
+  args:
+    stdin: |
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: deadlinedash-db
+        namespace: {{ k8s_namespace }}
+      type: Opaque
+      stringData:
+        DB_USER: "{{ vault_db_user }}"
+        DB_PASSWORD: "{{ vault_db_password }}"
+  no_log: true   # keep the password out of Ansible output
+  changed_when: true
+
+- name: Apply ConfigMap, Postgres and Service
+  ansible.builtin.command: kubectl apply -f {{ k8s_dir }}/{{ item }}
+  loop:
+    - configmap.yaml
+    - postgres.yaml
+    - service.yaml
+  changed_when: true
+
+- name: Wait for Postgres to be ready
+  ansible.builtin.command: kubectl -n {{ k8s_namespace }} rollout status statefulset/postgres --timeout=300s
+  changed_when: false
+
+- name: Apply the Deployment with a real image (only when image variables are given)
+  ansible.builtin.shell: |
+    set -o pipefail
+    sed "s#ACR_LOGIN_SERVER/deadlinedash:IMAGE_TAG#{{ acr_login_server }}/deadlinedash:{{ image_tag }}#" \
+      {{ k8s_dir }}/deployment.yaml | kubectl apply -f -
+  args:
+    executable: /bin/bash
+  when: acr_login_server != "" and image_tag != ""
+  changed_when: true
+
+- name: Wait for the app rollout
+  ansible.builtin.command: kubectl -n {{ k8s_namespace }} rollout status deployment/deadlinedash --timeout=300s
+  when: acr_login_server != "" and image_tag != ""
+  changed_when: false

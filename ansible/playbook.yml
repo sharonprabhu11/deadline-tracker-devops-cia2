@@ -1,0 +1,7 @@
+# Applies the Kubernetes manifests and creates the database Secret on the AKS cluster.
+# Run:  ansible-playbook -i inventory.ini playbook.yml --ask-vault-pass
+- name: Deploy DeadlineDash to AKS
+  hosts: local
+  gather_facts: false
+  roles:
+    - deploy

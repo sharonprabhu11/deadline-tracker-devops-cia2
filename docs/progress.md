@@ -19,6 +19,6 @@ Ticked only when really done and verified.
 ## Stages
 - [x] Stage 1 steps 1-3: generated project, footer + /api/info + health probes, Dockerfile/compose (verified: `docker compose up`, /api/info returned SHA and container name)
 - [x] Stage 1 steps 4-5: features and tests (24 tests pass via ./mvnw -B verify; add course/task verified against real Postgres in compose)
-- [ ] Stage 2: k8s, Ansible, workflow, aws-setup.md
+- [~] Stage 2: k8s, Ansible, workflow, azure-setup.md written; manifests dry-run OK, ansible syntax-check OK, workflow YAML parses (actionlint not available; nothing run in cloud yet)
 - [ ] Stage 3: cloud run
 - [ ] Stage 4: report and viva docs

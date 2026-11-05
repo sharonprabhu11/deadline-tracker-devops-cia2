@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Secrets (never commit) ###
+ansible/inventory.ini
+ansible/group_vars/all/vault.yml
+*.vault-pass
+kubeconfig*
+.env
