@@ -11,7 +11,7 @@ Ticked only when really done and verified.
 - [x] Ansible playbook and inventory example (playbook ran: failed=0)
 - [ ] App reachable in a browser, footer showing version, SHA and pod name  (API verified via kubectl proxy: SHA 36dd233, pod name alternates; browser at http://172.198.4.144/ is blocked by a FortiGuard filter on the user's network, needs a different network)
 - [x] Image visible in ECR (Azure: ACR tag 36dd233; user still to screenshot)
-- [ ] Redeploy demo works
+- [x] Redeploy demo works  (heading change pushed as e8c644f; footer SHA went 36dd233 -> e8c644f, new ReplicaSet, 2 pods, no manual steps. Rollback proven: commit 0137ca1 failed readiness (503), pipeline ran `rollout undo` at 13:40:46, site stayed on e8c644f; reverted in 6b4a35f)
 - [ ] `docs/evidence-checklist.md` filled in
 - [ ] `docs/report-notes.md` filled in
 - [ ] `docs/viva-notes.md` filled in
@@ -20,5 +20,5 @@ Ticked only when really done and verified.
 - [x] Stage 1 steps 1-3: generated project, footer + /api/info + health probes, Dockerfile/compose (verified: `docker compose up`, /api/info returned SHA and container name)
 - [x] Stage 1 steps 4-5: features and tests (24 tests pass via ./mvnw -B verify; add course/task verified against real Postgres in compose)
 - [x] Stage 2: k8s, Ansible, workflow, azure-setup.md written; manifests dry-run OK, ansible syntax-check OK, workflow YAML parses (actionlint not available; nothing run in cloud yet)
-- [ ] Stage 3: cloud run
+- [x] Stage 3: cloud run (all steps verified except browser screenshots, which the user captures)
 - [ ] Stage 4: report and viva docs
