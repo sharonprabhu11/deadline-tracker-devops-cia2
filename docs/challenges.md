@@ -15,3 +15,7 @@ Raw log, newest last. Used later in `docs/report-notes.md`.
 - The pipeline's Verify step waited for the rollout, failed, and `kubectl rollout undo` restored image `e8c644f` (13:35:42 deploy, 13:40:46 undo).
 - Lesson 1: Spring Boot refuses to start if a health group names a contributor that does not exist, so the demo indicator had to always exist and decide UP/DOWN from a property.
 - Lesson 2: the test config keeps the switch off so `build-test` stays green and the deploy job really runs. Deploys only run on `main`, so a throwaway branch could not exercise the rollback.
+
+## Port-change demo (finding)
+- Changing the Service port in `k8s/service.yaml` would have done nothing in Azure, because the pipeline only ran `kubectl set image` and never applied manifests. Fix: a pipeline step now runs `kubectl apply -f k8s/service.yaml -f k8s/configmap.yaml`, and the verify step reads the Service's real port instead of assuming 80.
+- Why not change the container port: probes, `containerPort` and `targetPort` would all have to change at once; during the rolling update the Service would send traffic to old pods on the wrong port.

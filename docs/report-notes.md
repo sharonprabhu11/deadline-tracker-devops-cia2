@@ -76,7 +76,7 @@ All in resource group `deadlinedash-rg`, region `indiasouthcentral`, Azure for S
 | Entra app registration `deadlinedash-github` | Federated credential for the repo's `main` branch; roles: AcrPush on ACR, AKS Cluster Admin Role on the cluster | free |
 | Cost Management budget | Alert set before creating anything | free |
 
-Kubernetes objects (namespace `deadlinedash`): Deployment with 2 replicas, Service (LoadBalancer, port 80 -> 8080),
+Kubernetes objects (namespace `deadlinedash`): Deployment with 2 replicas, Service (LoadBalancer, public port 8080 -> container port 8080; it was 80 until the port-change demo),
 StatefulSet `postgres` with its PVC and headless Service, ConfigMap (DB host/name/port), Secret (DB user/password,
 created by Ansible, never in git).
 

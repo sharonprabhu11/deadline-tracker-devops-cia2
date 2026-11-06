@@ -20,7 +20,7 @@ Current live values for reference: ACR `deadlinedash25500`, resource group `dead
 | 10 | [ ] Pods Running | Terminal: `kubectl -n deadlinedash get pods -o wide` | 2 app pods + postgres, all Running 1/1 |
 | 11 | [ ] All objects | Terminal: `kubectl -n deadlinedash get all,pvc,configmap,secret` | Deployment, ReplicaSet, Services, StatefulSet, PVC, ConfigMap and Secret exist |
 | 12 | [ ] Service and public IP | Terminal: `kubectl -n deadlinedash get svc` | LoadBalancer with EXTERNAL-IP |
-| 13 | [ ] Browser, first refresh | Phone/other network: `http://172.198.4.144/` | App reachable; footer shows version, commit SHA, pod name |
+| 13 | [ ] Browser, first refresh | Phone/other network: `http://172.198.4.144:8080/` (was port 80 before the port-change commit) | App reachable; footer shows version, commit SHA, pod name |
 | 14 | [ ] Browser, second refresh | Same page after refreshing a few times | Pod name in footer is different: load balancing across 2 replicas |
 | 15 | [ ] App with data | Browser: add a course and a task | Features work and data is stored in Postgres in the cluster |
 | 16 | [ ] Redeploy: before | Browser footer showing the old SHA (`36dd233`) and old heading. Use the earlier screenshot if you took one, otherwise skip | Starting point of the demo |

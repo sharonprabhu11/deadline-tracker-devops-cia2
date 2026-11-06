@@ -113,7 +113,7 @@ lets us write plain text; Kubernetes stores it base64-encoded (encoded, not encr
 - `livenessProbe` on `/actuator/health/liveness`: if it fails repeatedly, Kubernetes **restarts** the container.
 - `resources` requests (reserved) and limits (maximum) for CPU and memory.
 
-**`service.yaml`**: `type: LoadBalancer`: AKS creates an Azure public IP and load balancer. `port: 80` is what users hit,
+**`service.yaml`**: `type: LoadBalancer`: AKS creates an Azure public IP and load balancer. `port: 8080` is what users hit (it was 80; changed in git and applied by the pipeline),
 `targetPort: 8080` is the container port. `selector: app: deadlinedash` sends traffic to ready pods, round-robin.
 
 ---

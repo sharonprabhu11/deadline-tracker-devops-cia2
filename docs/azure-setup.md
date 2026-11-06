@@ -113,7 +113,7 @@ git push origin main
 Watch **Actions** in GitHub. The first run creates the Deployment with the real image. Then:
 ```bash
 kubectl -n deadlinedash get pods
-kubectl -n deadlinedash get service deadlinedash   # EXTERNAL-IP may take a minute; open http://<EXTERNAL-IP>/
+kubectl -n deadlinedash get service deadlinedash   # EXTERNAL-IP may take a minute; open http://<EXTERNAL-IP>:8080/
 ```
 Tell Claude when this is finished, and Stage 3 starts.
 
